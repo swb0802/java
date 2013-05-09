@@ -15,6 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class Test {
 
 	public static void main(String args[])
 	{
-		test3();
+		test4();
 		
 	}
 	
@@ -150,4 +151,14 @@ public class Test {
 		}
 	}
 	
+
+	public static void test4()
+	{
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("a", 1);
+		map.put("b", 2);
+		int x = 100;
+		x = map.get("c");
+		System.out.println(x);
+	}
 }

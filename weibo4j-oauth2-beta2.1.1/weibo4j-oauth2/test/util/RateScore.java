@@ -74,17 +74,17 @@ public class RateScore {
 		String w = null;
 		int polarity = 0;
 		
-//		//******************testing code ********************
-//		File file = null;
-//		BufferedWriter br = null;
-//		try {
-//			file = new File("D:\\tmp.txt");
-//			br = new BufferedWriter(new FileWriter(file, true));
-//		} catch (IOException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//		//******************testing code ********************
+		//******************testing code ********************
+		File file = null;
+		BufferedWriter br = null;
+		try {
+			file = new File("D:\\tmp.txt");
+			br = new BufferedWriter(new FileWriter(file, true));
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		//******************testing code ********************
 		
 		iter = words.iterator();
 		while(iter.hasNext())
@@ -93,36 +93,39 @@ public class RateScore {
 			if(dict.containsKey(w))
 			{
 				polarity = dict.get(w);
+				if(polarity == 1)
+				{
+					score++;
+				}
+				else if(polarity == 2)
+				{
+					score--;
+				}
+				
 			}
-			if(polarity == 1)
-			{
-				score++;
-			}
-			else if(polarity == 2)
-			{
-				score--;
-			}
-//			//******************testing code ********************
-//			try {
-//				br.write(w);
-//				br.write("\t");
-//				//System.out.println("polarty: " + polarity);
-//				br.write(String.valueOf(polarity));
-//				br.write("\n");
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} 
-//			//******************testing code ********************
+			
+			//******************testing code ********************
+			try {
+				br.write(w);
+				br.write("\t");
+				//System.out.println("polarty: " + polarity);
+				br.write(String.valueOf(polarity));
+				br.write("\n");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+			//******************testing code ********************
+			polarity = 0;
 		}
 
-//			try {
-//				if(br != null)
-//					br.close();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+			try {
+				if(br != null)
+					br.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 
 		return score;

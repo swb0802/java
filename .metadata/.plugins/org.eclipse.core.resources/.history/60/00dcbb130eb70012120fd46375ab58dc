@@ -1,0 +1,8 @@
+client_ID = 1516999658
+client_SERCRET = daf3fae86b0e40d6eaa82c037252ea97
+redirect_URI = http://apps.weibo.com/datasetswb
+
+baseURL=https://api.weibo.com/2/
+accessTokenURL=https://api.weibo.com/oauth2/access_token
+authorizeURL=https://api.weibo.com/oauth2/authorize
+rmURL=https://rm.api.weibo.com/2/

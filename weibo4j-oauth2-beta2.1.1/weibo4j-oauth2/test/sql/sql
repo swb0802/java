@@ -42,6 +42,9 @@ create table status
 	sid varchar(32) primary key
 );
 
+create unique index comment_id on comment(cid);
+create unique index comment_socre_id on comment_score(cid);
+
 CREATE TABLE `comment` (
   `created_at` bigint(20) DEFAULT NULL,
   `cid` varchar(32) NOT NULL,

@@ -37,9 +37,9 @@ public class Rating {
 		Iterator<Status> siter = null;
 		long startTime = 0;
 		long endTime = 0;
-		File file = null;
-		FileWriter fw = null;
-		
+//		File file = null;
+//		FileWriter fw = null;
+//		
 		
 		
 		statusDao = new StatusDAO();
@@ -49,59 +49,44 @@ public class Rating {
 		sslist = new LinkedList<StatusScore>();
 		slist = statusDao.getStatus();//取出所有微博		
 		siter = slist.iterator();
-		file = new File("D:\\timecost.txt");
-		try {
-			fw = new FileWriter(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		file = new File("D:\\timecost.txt");
+//		try {
+//			fw = new FileWriter(file);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 		
-		try {
+
 			while(siter.hasNext())//对于每一条微博，取出它所有的评论，进行评分
 			{
 				status = siter.next();
 				
-				startTime = System.currentTimeMillis();
+//				startTime = System.currentTimeMillis();
 				clist = commentDao.getCommentByStatusId(status.getSid());
-				endTime = System.currentTimeMillis();
-				fw.write(clist.size() + "\t");
-				fw.write((endTime - startTime) + "\t");
-				System.out.print(clist.size() + "\t");
-				System.out.print((endTime - startTime) + "\t");
-				
-				startTime = System.currentTimeMillis();
+//				endTime = System.currentTimeMillis();
+//				fw.write(clist.size() + "\t");
+//				fw.write((endTime - startTime) + "\t");
+//				System.out.print(clist.size() + "\t");
+//				System.out.print((endTime - startTime) + "\t");
+//				
+//				startTime = System.currentTimeMillis();
 				cslist = rateScore.rateComment(clist);
-				endTime = System.currentTimeMillis();
-				fw.write((endTime - startTime) + "\t");
-				System.out.print((endTime - startTime) + "\t");
+//				endTime = System.currentTimeMillis();
+//				fw.write((endTime - startTime) + "\t");
+//				System.out.print((endTime - startTime) + "\t");
 				
 				statusScore = new StatusScore();
-				startTime = System.currentTimeMillis();
+//				startTime = System.currentTimeMillis();
 				statusScore.setScore(rateScore.rateStatus(cslist));
-				endTime = System.currentTimeMillis();
-				fw.write((endTime - startTime) + "\n");
+//				endTime = System.currentTimeMillis();
+//				fw.write((endTime - startTime) + "\n");
 				statusScore.setSid(status.getSid());
-				System.out.print((endTime - startTime) + "\n");
-				fw.flush();
+//				System.out.print((endTime - startTime) + "\n");
+//				fw.flush();
 				sslist.add(statusScore);
-				//saveCommentScore(cslist);
+				saveCommentScore(cslist);
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally{
-			if(fw != null)
-			{
-				try {
-					fw.flush();
-					fw.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		//saveStatusScore(sslist);
+		saveStatusScore(sslist);
 	}
 	
 	public void saveStatusScore(List<StatusScore> sslist)
