@@ -15,6 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -33,7 +34,11 @@ public class Test {
 
 	public static void main(String args[])
 	{
-		test4();
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("aaa");
+		list.add("bbb");
+		//String[] strArray = (String[]) list.toArray();
+		System.out.println(list.toArray());
 		
 	}
 	

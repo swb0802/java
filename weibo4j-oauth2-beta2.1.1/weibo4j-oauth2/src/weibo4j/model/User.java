@@ -313,6 +313,30 @@ public class User extends WeiboResponse implements java.io.Serializable {
 		}
 		return null;
 	}
+	
+	public static UserIdWapper constructIdWapper(Response res) {
+		try {
+			JSONObject jsonIds = res.asJSONObject(); //asJSONArray();		
+			JSONArray ids = jsonIds.getJSONArray("ids");
+			if(ids==null)
+			{
+				return new UserIdWapper();
+			}
+			String[] idArray = ids.toString().substring(1,ids.toString().length()-1).split(",");
+			
+			long previousCursor = jsonIds.getLong("previous_curosr");
+			long nextCursor = jsonIds.getLong("next_cursor");
+			long totalNumber = jsonIds.getLong("total_number");
+			return new UserIdWapper(idArray, previousCursor, nextCursor, totalNumber);
+		} catch (WeiboException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	public String getId() {
 		return id;
@@ -493,6 +517,7 @@ public class User extends WeiboResponse implements java.io.Serializable {
 		", statusId=" + statusId +
 		"]";
 	}
+	
 
 
 }

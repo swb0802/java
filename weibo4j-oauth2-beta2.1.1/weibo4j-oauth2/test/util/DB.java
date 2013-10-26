@@ -9,7 +9,7 @@ import java.sql.Statement;
 public class DB {
 
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-	static final String DATABASE_URL = "jdbc:mysql://localhost:3306/sina?useUnicode=true&charsetEncoding=GBK";
+	static final String DATABASE_URL = "jdbc:mysql://localhost:3306/sina?useUnicode=true&characterEncoding=GBK";
 	static final String USERNAME = "root";
 	static final String PASSWORD = "user";
 	
@@ -56,6 +56,7 @@ public class DB {
 		}
 		return pStmt;
 	}
+	
 	
 	
 }

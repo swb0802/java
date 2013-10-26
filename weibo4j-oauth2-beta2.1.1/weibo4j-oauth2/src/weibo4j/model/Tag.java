@@ -23,6 +23,13 @@ public class Tag extends WeiboResponse implements java.io.Serializable {
 	
 	private String weight;
 
+	public Tag(String id, String value, String weight)
+	{
+		this.id = id;
+		this.value = value;
+		this.weight = weight;
+	}
+	
 	public Tag(JSONObject json) throws WeiboException, JSONException {			
 			if (!json.getString("id").isEmpty()) {
 				id = json.getString("id"); 
@@ -65,11 +72,39 @@ public class Tag extends WeiboResponse implements java.io.Serializable {
 		try {
 			JSONArray tags = res.asJSONArray();
 			List<Tag> tagList = new ArrayList<Tag>();
+
 			for(int i=0;i<tags.getJSONObject(0).getJSONArray("tags").length();i++){
 				tagList.add(new Tag(tags.getJSONObject(0).getJSONArray("tags").getJSONObject(i)));
 			}
+			
 			String id = tags.getJSONObject(0).getString("id");
 			return new TagWapper(tagList, id);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (WeiboException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static TagWapper[] constructTagWapperArray(Response res){
+		try {
+			JSONArray tags = res.asJSONArray();
+			List<Tag> tagList = null;
+			String id = null;
+			TagWapper[] twArr = new TagWapper[tags.length()];
+			for(int j = 0; j < tags.length(); j++)
+			{
+				tagList = new ArrayList<Tag>();
+				for(int i=0;i<tags.getJSONObject(j).getJSONArray("tags").length();i++){
+					tagList.add(new Tag(tags.getJSONObject(j).getJSONArray("tags").getJSONObject(i)));
+				}
+				id = tags.getJSONObject(j).getString("id");
+				twArr[j] = new TagWapper(tagList, id);
+			}
+			
+			
+			return twArr;
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (WeiboException e) {

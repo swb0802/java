@@ -45,6 +45,16 @@ create table status
 create unique index comment_id on comment(cid);
 create unique index comment_socre_id on comment_score(cid);
 
+create table tag
+(
+	tid varchar(32),
+	value text,
+	sid varchar(32),
+	weight varchar(32)
+)ENGINE=InnoDB DEFAULT CHARSET=GBK;
+
+
+
 CREATE TABLE `comment` (
   `created_at` bigint(20) DEFAULT NULL,
   `cid` varchar(32) NOT NULL,

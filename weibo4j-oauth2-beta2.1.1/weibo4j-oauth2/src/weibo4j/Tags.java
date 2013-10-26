@@ -71,8 +71,8 @@ public class Tags extends Weibo{
 	 *      href="http://open.weibo.com/wiki/2/tags/tags_batch">tags/tags_batch</a>
 	 * @since JDK 1.5
 	 */
-	public TagWapper getTagsBatch(String uids) throws WeiboException {
-		return Tag.constructTagWapper(client.get(
+	public TagWapper[] getTagsBatch(String uids) throws WeiboException {
+		return Tag.constructTagWapperArray(client.get(
 				WeiboConfig.getValue("baseURL") + "tags/tags_batch.json",
 				new PostParameter[] { new PostParameter("uids", uids) }));
 	}

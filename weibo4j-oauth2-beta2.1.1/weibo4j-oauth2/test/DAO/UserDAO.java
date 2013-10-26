@@ -2,41 +2,36 @@ package DAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 import util.DB;
 
 public class UserDAO {
 
-	public void test()
+	public void saveIds(ArrayList<String> uids)
 	{
 		Connection conn = null;
 		PreparedStatement pStmt = null;
-		String sql = "insert into user(uid, screen_name) values(?, ?)";
+		String sql = "insert into sina_user(uid) values(?)";
 		
 		try {
 			conn = DB.getConn();
 			conn.setAutoCommit(false);
 			pStmt = DB.getpStmt(conn, sql);
 			
-			pStmt.setString(1, "111111");
-			pStmt.setString(2, "aaaaaa");
-			pStmt.addBatch();
-			
-			pStmt.setString(1, "222222");
-			pStmt.setString(2, "bbbbbb");
-			pStmt.addBatch();
-			
-			pStmt.setString(1, "333333");
-			pStmt.setString(2, "cccccc");
-			pStmt.addBatch();
-			
-			pStmt.setString(1, "333333");
-			pStmt.setString(2, "dddddd");
-			pStmt.addBatch();
-						
-			pStmt.executeBatch();
-			conn.commit();
+			for(int i = 0; i < uids.size(); i += 50)
+			{
+				for(int j = i * 50; j < uids.size(); j++)
+				{
+					pStmt.setString(1, uids.get(j));
+					pStmt.addBatch();
+				}
+				pStmt.executeBatch();
+				conn.commit();				
+			}					
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally
@@ -57,10 +52,35 @@ public class UserDAO {
 		
 	}
 	
+	public ArrayList<String> getIds()
+	{
+		ArrayList<String> list = null;
+		String sql = "select uid from sina_user";
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		String uid = null;
+		
+		try {
+			list = new ArrayList<String>();
+			conn = DB.getConn();
+			stmt = DB.getStmt(conn);
+			rs = stmt.executeQuery(sql);
+			while(rs.next())
+			{
+				uid = rs.getString("uid");
+				list.add(uid);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
 	public static void main(String args[])
 	{
 		UserDAO userDao = new UserDAO();
-		userDao.test();
+		//userDao.test();
 	}
 }
 

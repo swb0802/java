@@ -189,6 +189,6 @@ public class CommentDAO {
 	public static void main(String args[])
 	{
 
-		CommentDAO cd = new CommentDAO();
+		 //CommentDAO cd = new CommentDAO();
 	}
 }

@@ -7,15 +7,21 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import util.StringTool;
 import weibo4j.Timeline;
 import weibo4j.model.Paging;
+import weibo4j.model.Tag;
+import weibo4j.model.TagWapper;
 import weibo4j.model.WeiboException;
 import weibo4j.org.json.JSONArray;
 import weibo4j.org.json.JSONException;
 import weibo4j.org.json.JSONObject;
-import download.CommentFetcher;
-import download.GetOauth;
+import fetcher.CommentFetcher;
+import fetcher.GetOauth;
+import fetcher.TagFetcher;
 
 public class Download {
 
@@ -222,6 +228,8 @@ public class Download {
 			e.printStackTrace();
 		}
 	}
+	
+	
 	
 	public static void main(String args[])
 	{

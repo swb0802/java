@@ -3,6 +3,7 @@ package weibo4j;
 import weibo4j.model.Paging;
 import weibo4j.model.PostParameter;
 import weibo4j.model.User;
+import weibo4j.model.UserIdWapper;
 import weibo4j.model.UserWapper;
 import weibo4j.model.WeiboException;
 import weibo4j.org.json.JSONArray;
@@ -258,6 +259,33 @@ public class Friendships extends Weibo{
 	public String[] getFriendsIdsByUid(String uid, Integer count, Integer cursor)
 			throws WeiboException {
 		return User.constructIds(client.get(
+				WeiboConfig.getValue("baseURL")
+						+ "friendships/friends/ids.json", new PostParameter[] {
+						new PostParameter("uid", uid),
+						new PostParameter("count", count.toString()),
+						new PostParameter("cursor", cursor.toString()) }));
+	}
+	
+	/**
+	 * 获取用户关注的用户UID列表
+	 * 
+	 * @param uid
+	 *            需要查询的用户UID
+	 * @param count
+	 *            单页返回的记录条数，默认为500，最大不超过5000
+	 * @param cursor
+	 *            返回结果的游标，下一页用返回值里的next_cursor，上一页用previous_cursor，默认为0
+	 * @return ids
+	 * @throws WeiboException
+	 *             when Weibo service or network is unavailable
+	 * @version weibo4j-V2 1.0.0
+	 * @see <a
+	 *      href="http://open.weibo.com/wiki/2/friendships/friends/ids">friendships/friends/ids</a>
+	 * @since JDK 1.5
+	 */
+	public UserIdWapper getFriendsIdsWapperByUid(String uid, Integer count, Integer cursor)
+			throws WeiboException {
+		return User.constructIdWapper(client.get(
 				WeiboConfig.getValue("baseURL")
 						+ "friendships/friends/ids.json", new PostParameter[] {
 						new PostParameter("uid", uid),
