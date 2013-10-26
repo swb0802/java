@@ -1,0 +1,18 @@
+import java.util.Scanner;
+
+
+public class NO1045 {
+
+	public static void main(String args[])
+	{
+		Scanner sc = new Scanner(System.in);
+		float vs, r, c;
+		int count;
+		vs = sc.nextFloat();
+		r = sc.nextFloat();
+		c = sc.nextFloat();
+		count = sc.nextInt();
+		
+	}
+	
+}
