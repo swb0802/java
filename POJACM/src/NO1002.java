@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class NO1002 {
 
-	private static HashMap<Character, Character> code = new HashMap();
+	private static HashMap<Character, Character> code = new HashMap<Character, Character>();
 	
 	static {
 		code.put('A', '2');code.put('B', '2');code.put('C', '2');
@@ -75,7 +75,7 @@ public class NO1002 {
 			if((count = map.get(str)) > 1)
 			System.out.println(str + " " + count);
 		}
-		
+		sc.close();
 
 	}
 	

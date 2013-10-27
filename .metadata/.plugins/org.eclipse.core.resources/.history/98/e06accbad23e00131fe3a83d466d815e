@@ -1,0 +1,15 @@
+
+public class Problem4 {
+
+	public static boolean isPalindrome(int num)
+	{
+		String str = String.valueOf(num);
+		int size = str.length() / 2;
+	}
+	
+	public static void main(String args[])
+	{
+		
+	}
+	
+}

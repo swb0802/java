@@ -1,0 +1,21 @@
+
+public class Problem4 {
+
+	public static boolean isPalindrome(int num)
+	{
+		String str = String.valueOf(num);
+		int size = str.length() / 2 - 1;
+		boolean flag = true;
+		for(int i = 0; i <= size; i++)
+		{
+			if(str.charAt(i) == str.charAt(str.length() - i))
+			{}
+		}
+	}
+	
+	public static void main(String args[])
+	{
+		
+	}
+	
+}
