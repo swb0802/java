@@ -1,0 +1,37 @@
+package p10_19;
+
+public class Problem14_2 {
+
+	public static void main(String args[])
+	{
+		int m = 1;
+		int n = 1;
+		int length = 1;
+		while(true)
+		{
+			while(n > 6*m+4)
+			{
+				m++;
+			}
+			while(n < 6*m+4)
+			{
+				n = n * 2;
+				length++;
+			}
+			if(n == 6*m+4)
+			{
+				n = 2 * m + 1;
+				length++;
+				if(n > 1000000)
+				{
+					n = 6 * m + 4;
+					break;
+				}
+				
+			}
+			System.out.println(n);
+		}
+		System.out.println(n);
+	}
+	
+}

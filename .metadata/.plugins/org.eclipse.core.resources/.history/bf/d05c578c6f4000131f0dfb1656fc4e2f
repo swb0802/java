@@ -1,0 +1,18 @@
+package p10_19;
+
+import java.util.Scanner;
+
+public class Problem13 {
+
+	public static void main(String args[])
+	{
+		String [] strs = new String[100];
+		Scanner sc = new Scanner(System.in);
+		int i = 0;
+		while(sc.hasNextLine())
+		{
+			strs[i++] = sc.nextLine();
+		}
+	}
+	
+}

@@ -1,0 +1,17 @@
+package p10_19;
+
+public class Problem14_2 {
+
+	public static void main(String args[])
+	{
+		int m = 1;
+		int n = 1;
+		int length = 1;
+		while(true)
+		{
+			
+		}
+	
+	}
+	
+}

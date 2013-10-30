@@ -1,0 +1,45 @@
+package p10_19;
+
+import java.util.Scanner;
+import java.util.Stack;
+
+public class Problem13 {
+
+	static final int LINE = 3, COL = 3;
+	
+	public static void main(String args[])
+	{
+		String [] strs = new String[LINE];
+		Scanner sc = new Scanner(System.in);
+		for(int i = 0; i < LINE; i++)
+		{
+			strs[i] = sc.nextLine();
+		}
+		
+		int sum = 0;
+		int reg = 0;
+		Stack<Integer> sta = new Stack<Integer>();
+		for(int j = COL-1; j >= 0; j--)
+		{
+			for(int i = 0; i < LINE; i++)
+			{
+				sum += strs[i].charAt(j) - '0';
+			}
+			sum += reg;
+			sta.push(sum % 10);
+			sum /= 10;
+			reg = sum;
+		}
+		while(reg != 0)
+		{
+			sta.push(reg % 10);
+			reg /= 10;
+		}
+		//for(int i = 0; i < 10; i++)
+		while(!sta.empty())
+		{
+			System.out.print(sta.pop());
+		}
+	}
+	
+}

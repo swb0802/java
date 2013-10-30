@@ -1,0 +1,78 @@
+package p10_19;
+
+public class Problem12_2 {
+
+	private static final  int PRIMECOUNT = 1000; 
+	private static int[] primeArr = new int[PRIMECOUNT];
+	
+	public static boolean isPrime(int num)
+	{
+		if(num <= 4)
+		{
+			if(num == 2 || num == 3)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		if(num % 2 == 0)
+		{
+			return false;
+		}
+		if(num % 3 == 0)
+		{
+			return false;
+		}
+		int sqrNum = (int) Math.sqrt(num);
+		for(int i = 5; i <= sqrNum; i += 6)
+		{
+			if(num % i == 0 || num % (i + 2)==0)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private static void calcPrimeArr()
+	{
+		int primeCount = 0;
+		for(int i = 1; primeCount < PRIMECOUNT; i++)
+		{
+			if(isPrime(i))
+			{
+				primeArr[primeCount] = i;
+				primeCount++;
+			}
+		}
+	}
+	
+	public static int divisorCount(int num)
+	{
+		int divCount = 1;
+		int exp = 0;
+		for(int i = 0; i < PRIMECOUNT; i++)
+		{
+			exp = 0;
+			if(num == 1)
+			{
+				break;
+			}
+			while(num % primeArr[i] == 0)
+			{
+				num /= primeArr[i];
+				exp++;
+			}
+			divCount *= (exp + 1);
+		}
+		return divCount;
+	}
+	
+	public static void main(String args[])
+	{
+		
+	}
+}

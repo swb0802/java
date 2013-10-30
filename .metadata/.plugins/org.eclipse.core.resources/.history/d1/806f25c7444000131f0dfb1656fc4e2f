@@ -1,0 +1,43 @@
+package p1_9;
+
+public class Problem7_2 {
+
+	//Comparing the alg in Problem3, this algorithm
+	//reducing the time complexity from n^0.5 down to (n^0.5)/3
+	public static boolean isPrime(int num)
+	{
+		if(num <= 4)
+		{
+			if(num == 2 || num == 3)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		int sqrNum = (int) Math.sqrt(num);
+		for(int i = 5; i <= sqrNum; i += 6)
+		{
+			if(num % i == 0 || num % (i + 2)==0)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public static void main(String args[])
+	{
+		int primeCount = 0;
+		for(int i = 2; primeCount < 10001; i++)
+		{
+			if(isPrime(i))
+			{
+				primeCount++;
+			}
+		}
+	}
+	
+}

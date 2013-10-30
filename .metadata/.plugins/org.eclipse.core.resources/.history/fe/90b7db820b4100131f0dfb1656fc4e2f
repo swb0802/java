@@ -1,0 +1,26 @@
+package p10_19;
+
+public class Problem15 {
+
+	public static long calc(int x, int y)
+	{
+		if(x == 1 || y == 1)
+		{
+			return 1;
+		}
+		else if(x == y)
+		{
+			return 2 * calc(x-1, y);
+		}
+		else 
+		{
+			return calc(x-1, y) + calc(x, y-1);
+		}
+	}
+	
+	public static void main(String args[])
+	{
+		System.out.println(calc(21,21));
+	}
+	
+}
