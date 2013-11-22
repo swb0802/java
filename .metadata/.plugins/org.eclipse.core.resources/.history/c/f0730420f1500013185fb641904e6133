@@ -1,0 +1,387 @@
+package mf.nexflix;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
+
+import mf.nexflix.model.Data;
+import mf.nexflix.model.Pair;
+
+public class SubExp {
+	
+	class Param()
+	{}
+	
+	public Data loadTrainingData()
+	{
+		String path = "D:\\dataset\\nf_prize_dataset\\sub\\training_subset.txt";
+		BufferedReader br = null;
+		String strLine = null, strLastLine = null;
+		ArrayList<Integer> uidArr = null;
+		ArrayList<Integer> midArr = null;
+		HashMap<Integer, Integer> uidMap = null;
+		HashMap<Integer, Integer> midMap = null;
+		HashMap<Pair, Integer> ratingMap = null;		
+		int uid = 0, mid = 0, rating = 0;
+		String[] strSeg = null;
+				
+//		int confictingCount = 0;
+//		int totalLineCount = 0;
+//		int movieLineCount = 0;
+//		int ratingLineCount = 0;
+		
+		try {
+			br = new BufferedReader(new FileReader(new File(path)));
+			uidArr = new ArrayList<Integer>(500000);
+			midArr = new ArrayList<Integer>(2000);
+			uidMap = new HashMap<Integer, Integer>(700000);
+			midMap = new HashMap<Integer, Integer>(2500);
+			ratingMap = new HashMap<Pair, Integer>(15000000);
+			while((strLine = br.readLine()) != null)
+			{
+//				totalLineCount++;
+				if(strLine.length() <= 6) //movie id
+				{
+//					movieLineCount++;
+					mid = Integer.parseInt(strLine.substring(0, strLine.length() - 1));
+					if(midMap.size() >= midArr.size())
+					{
+						midArr.add(mid);
+					}
+					else
+					{
+						midArr.set(midMap.size(), mid);
+					}
+					midMap.put(mid, midMap.size());
+					if(strLastLine != null && strLastLine.length() <= 6)
+					{
+						System.out.println("empty movie:" + (mid - 1));
+					}
+					strLastLine = strLine;
+					continue;
+				}
+//				ratingLineCount++;
+				strSeg = strLine.split(",");
+				uid = Integer.parseInt(strSeg[0]);
+				if(!uidMap.containsKey(uid))
+				{
+					if(uidMap.size() >= uidArr.size())
+					{
+						uidArr.add(uid);
+					}
+					else
+					{
+						uidArr.set(uidMap.size(), uid);	
+					}					
+					uidMap.put(uid, uidMap.size());
+				}
+				rating = Integer.parseInt(strSeg[1]);
+				
+//				//record some users rating the same movie more than one time
+//				if(ratingMap.containsKey(new Pair(uid, mid))) 
+//				{
+//					confictingCount++;
+//				}
+				ratingMap.put(new Pair(uid, mid), rating);
+				strLastLine = strLine;
+			}
+			System.out.println("rating count" + ratingMap.size());
+			System.out.println("uidArr count" + uidArr.size());
+			System.out.println("uidMap count" + uidMap.size());
+			System.out.println("midArr count" + midArr.size());
+			System.out.println("midMap count" + midMap.size());
+//			System.out.println("conficting count" + confictingCount);
+//			System.out.println("totalLine count" + totalLineCount);
+//			System.out.println("movieLine count" + movieLineCount);
+//			System.out.println("ratingLine count" + ratingLineCount);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally{
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+		int[] uids = new int[uidArr.size()];
+		int[] mids = new int[midArr.size()];
+		for(int i = 0; i < uids.length; i++)
+		{
+			uids[i] = uidArr.get(i);
+		}
+		for(int i = 0; i < mids.length; i++)
+		{
+			mids[i] = midArr.get(i);
+		}
+
+		return new Data(uids, mids, uidMap, midMap, ratingMap);
+	}
+	
+	public void statistic(HashMap<Pair, Integer> ratingMap, int[] uids, int[] mids)
+	{
+		BufferedWriter mBw;
+		BufferedWriter uBw;
+		int[] uRc = new int[uids.length];
+		int[] mRc = new int[mids.length];
+		Pair p = new Pair();
+		try {
+			uBw = new BufferedWriter(new FileWriter(new File("D:\\dataset\\nf_prize_dataset\\sub4\\sub_user_RC4")));
+			mBw = new BufferedWriter(new FileWriter(new File("D:\\dataset\\nf_prize_dataset\\sub4\\sub_movie_RC4")));
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		try {
+			
+			for(int i = 0; i < uids.length; i++)
+			{
+				for(int j = 0; j < mids.length; j++)
+				{
+					p.uid = uids[i];
+					p.mid = mids[j];
+					if(ratingMap.containsKey(p))
+					{
+						uRc[i]++;
+						mRc[j]++;
+					}				
+				}
+			}
+			for(int i = 0; i < uRc.length; i++)
+			{
+				uBw.write(uRc[i] + "\n");
+			}
+			for(int i = 0; i < mRc.length; i++)
+			{
+				mBw.write(mRc[i] + "\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally{
+			try {
+				mBw.flush();
+				uBw.flush();
+				mBw.close();
+				uBw.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	public HashMap<Pair, Integer> loadQualifyingSet()
+	{
+		String path = "D:\\dataset\\nf_prize_dataset\\sub\\qualifying_subset.txt";
+		BufferedReader br = null;
+		String strLine = null;
+		HashMap<Pair, Integer> ratingMap = null;		
+		int uid = 0, mid = 0, rating = 0;
+		String[] strSeg = null;
+		
+		try {
+			br = new BufferedReader(new FileReader(new File(path)));
+			ratingMap = new HashMap<Pair, Integer>();
+			while((strLine = br.readLine()) != null)
+			{
+				if(strLine.length() <= 6) //movie id
+				{
+					mid = Integer.parseInt(strLine.substring(0, strLine.length() - 1));
+					continue;
+				}
+				strSeg = strLine.split(",");
+				uid = Integer.parseInt(strSeg[0]);
+				rating = Integer.parseInt(strSeg[1]);
+				ratingMap.put(new Pair(uid, mid), rating);
+			}
+			System.out.println("qualifying rating count" + ratingMap.size());
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally{
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return ratingMap;
+	}
+	
+	public float RMSE(float[][] userFactor, float[][] movieFactor, 
+						HashMap<Pair, Integer> qualifyingMap, 
+						HashMap<Integer, Integer> uidMap,
+						HashMap<Integer, Integer> midMap)
+	{
+		float rmse = 0.0F;
+		final int K = userFactor[0].length;
+		Iterator<Entry<Pair, Integer>> iter = qualifyingMap.entrySet().iterator();
+		Entry<Pair, Integer> entry = null;
+		float estRating = 0.0F;
+		float rating = 0.0F;
+		int indexU, indexM;
+		int uid, mid;
+		while(iter.hasNext())
+		{
+			estRating = 0.0F;
+			entry = iter.next();
+			uid = entry.getKey().uid;
+			mid = entry.getKey().mid;
+			indexU = uidMap.get(entry.getKey().uid);
+			indexM = midMap.get(entry.getKey().mid);
+			rating = entry.getValue();
+			for(int k = 0; k < K; k++)
+			{
+				estRating += userFactor[indexU][k] * movieFactor[indexM][k];
+			}
+			rating = qualifyingMap.get(new Pair(uid, mid));
+			rmse += (rating - estRating) * (rating - estRating);
+		}
+		rmse /= qualifyingMap.size();
+		rmse = (float) Math.sqrt(rmse);
+		return rmse;
+	}
+	
+	public void trainAndTest(Data data)
+	{
+		final int K = 50;			//factor count
+		final float regU = 0.01F;	//regularization coefficient
+		final float regM = 0.01F;	//regularization coefficient
+		final float lr = 0.1F;		//learning rate
+		final int a = 1;			//lower bound of rating
+		final float r = 0.0005F;		//random number bound: n(r) ~ [-r, r]
+		float rmse1 = Float.MAX_VALUE;
+		float rmse2 = 0.0F;
+		long startTime = 0L;
+		long endTime = 0L;
+		long memoryUsage = 0L;
+		int counter = 0;			//iterating counter
+		int[] uids = data.uids;
+		int[] mids = data.mids;
+		HashMap<Integer, Integer> uidMap = data.uidMap;
+		HashMap<Integer, Integer> midMap = data.midMap;
+		HashMap<Pair, Integer> ratingMap = data.ratingMap;
+		float[][] userFactor = new float[uids.length][K];
+		float[][] movieFactor = new float[mids.length][K];
+		float[] uGrad = new float[K];		//gradient of Ui
+		float[] mGrad = new float[K];		//gradient of Mj
+		
+		File file = new File("D:\\dataset\\nf_prize_dataset\\sub\\result");
+		BufferedWriter bw = null;
+		
+		try {
+			bw = new BufferedWriter(new FileWriter(file));
+			bw.append(K + "\t" +
+					lr + "\t" +
+					regU + "\t" +
+					regM + "\t" +
+					r + "\t");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		startTime = System.currentTimeMillis();
+		//initial userFactor and movieFactor
+		Iterator<Integer> iter1 = ratingMap.values().iterator();
+		int rating = 0;
+		while(iter1.hasNext())
+		{
+			rating += iter1.next();
+		}
+		float aveRating = rating / ratingMap.size();
+		for(int k = 0; k < K; k++)
+		{
+			for(int i = 0; i < uids.length; i++)
+			{
+				userFactor[i][k] = (float) (Math.sqrt((aveRating - a) / K) + Math.random() * 2 * r - r);
+			}
+			for(int j = 0; j < mids.length; j++)
+			{
+				movieFactor[j][k] = (float)(Math.sqrt((aveRating - a) / K) + Math.random() * 2 * r - r);
+			}
+		}
+		System.out.println("Intialization complete.");
+//		System.out.println("Memroy usage:" + Runtime.getRuntime().totalMemory());
+		memoryUsage = Runtime.getRuntime().totalMemory();
+		while(true)
+		{
+			Iterator<Entry<Pair, Integer>> iter2 = ratingMap.entrySet().iterator();
+			Entry<Pair, Integer> entry = null;
+			Pair pair = null;
+			int indexU, indexM;
+			counter++;
+			while(iter2.hasNext()) // for every rating
+			{
+				//calculate gradient of U and M
+				entry = iter2.next();
+				pair = entry.getKey();
+				rating = entry.getValue();
+				indexU = uidMap.get(pair.uid);
+				indexM = midMap.get(pair.mid);
+				float puimj = 0.0F;
+				float tmpDif = 0.0F;
+				for(int k = 0; k < K; k++)
+				{
+					puimj += userFactor[indexU][k] * movieFactor[indexM][k];
+				}
+
+				tmpDif = rating - puimj;
+				for(int k = 0; k < K; k++)
+				{
+					uGrad[k] = tmpDif * movieFactor[indexM][k] - regU * userFactor[indexU][k];
+					mGrad[k] = tmpDif * userFactor[indexU][k] - regM * movieFactor[indexM][k];
+					// update factor vector
+					userFactor[indexU][k] += lr * uGrad[k];
+					movieFactor[indexM][k] += lr * mGrad[k];
+				}
+				
+			}
+			rmse2 = RMSE(userFactor, movieFactor, ratingMap, uidMap, midMap);
+			if(rmse2 > rmse1)
+			{
+				break;
+			}
+			rmse1 = rmse2;
+		}
+		endTime = System.currentTimeMillis();
+		try {
+			bw.append(memoryUsage + "\t" +
+					(endTime - startTime) + "\t" +
+					counter + "\t" + 
+					rmse1 + "\n"
+					);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			bw.flush();
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+//	public static void main(String args[])
+//	{
+//		SubExp driver = new SubExp();
+//		Data data = driver.loadTrainingData();//(!!! time-costing)
+//		driver.trainAndTest(data);
+//	}
+}

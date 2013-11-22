@@ -1,0 +1,22 @@
+import java.util.HashMap;
+
+
+public class Test {
+
+	class Pair
+	{
+		public int i;
+		public int j;
+		public Pair(int i, int j)
+		{
+			this.i = i;
+			this.j = j;
+		}
+	}
+	
+	public static void main(String args[])
+	{
+		HashMap<Pair, Integer> map = new HashMap<Pair, Integer>();
+		map.put(new Pair(1,2), 3);
+	}
+}

@@ -1,0 +1,69 @@
+import java.util.HashMap;
+
+
+public class Test {
+
+	
+	
+	public static void main(String args[])
+	{
+		HashMap<Pair, Integer> map = new HashMap<Pair, Integer>();
+		Pair[] pArr = new Pair[10];
+		for(int i = 0; i < 10; i++)
+		{
+			pArr[i] = new Pair(1, 2, (i + 1) % 5);
+			map.put(pArr[i], i + 1);
+		}
+
+		System.out.println(map.size());
+		System.out.println(map.containsKey(pArr[5]));
+		System.out.println(map.get(pArr[5]));
+//		Pair p1 = new Pair(1,2), p2 = new Pair(1,2);
+//		System.out.println(p1.equals(p2));
+//		System.out.println(p1.hashCode());
+//		System.out.println(p2.hashCode());
+//		System.out.println(p1.toString());
+//		System.out.println(p2.toString());
+	}
+}
+
+class Pair
+{
+	public int i;
+	public int j;
+	public int code;
+	public Pair(int i, int j, int code)
+	{
+		this.i = i;
+		this.j = j;
+		this.code = code;
+	}
+	
+	
+	public boolean equals(Object p)
+	{
+		if(p == null)
+		{
+			return false;
+		}
+		if((i == ((Pair)p).i) && (j == ((Pair)p).j))
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	
+	public int hashCode()
+	{
+		//return (int) (i * Math.pow(10, 5) + j);
+		//return (int) (Math.random() * 20);
+		return code;
+	}
+	
+	
+	public String toString()
+	{
+		return "" + Math.random();
+	}
+}

@@ -1,0 +1,459 @@
+package mf.nexflix.preprocess;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Map.Entry;
+
+import mf.nexflix.model.Data;
+import mf.nexflix.model.Pair;
+
+public class Spliter {
+
+	/*
+	 * Extract uids from training set.
+	 * save them to file
+	 * */
+	public void extratUserIds()
+	{
+		String dir = "D:\\dataset\\nf_prize_dataset\\download\\training_set\\training_set";
+		File directory = null, uidFile = null;
+		BufferedWriter bw = null;
+		BufferedReader br = null;
+		String strLine;
+		int uid;
+		HashSet<Integer> uidSet = new LinkedHashSet<Integer>();
+		
+		try {
+			directory = new File(dir);
+			uidFile = new File("D:\\dataset\\nf_prize_dataset\\uids.txt");
+			File[] files = directory.listFiles();
+			for(int i = 0; i < files.length; i++)
+			{
+				System.out.println(files[i].getName());
+				br = new BufferedReader(new FileReader(files[i]));
+				br.readLine();
+				while((strLine = br.readLine()) != null)
+				{
+					if(strLine.length() <= 6) //movie id
+					{
+						continue;
+					}
+					uid = Integer.parseInt(strLine.split(",")[0]);
+					uidSet.add(uid);
+				}
+				br.close();
+			}
+			System.out.println(uidSet.size());
+			bw = new BufferedWriter(new FileWriter(uidFile));
+			Iterator<Integer> iter = uidSet.iterator();
+			while(iter.hasNext())
+			{
+				bw.write(iter.next() + "\n");			
+			}
+			bw.close();
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public HashSet<Integer> loadUids()
+	{
+		HashSet<Integer> uidSet = null;
+		String path = "D:\\dataset\\nf_prize_dataset\\uids.txt";
+		BufferedReader br = null;
+		String strLine = null;
+		
+		try {
+			br = new BufferedReader(new FileReader(new File(path)));
+			uidSet = new LinkedHashSet<Integer>();
+			while((strLine = br.readLine()) != null)
+			{
+				uidSet.add(Integer.parseInt(strLine));
+			}
+			br.close();
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return uidSet;
+		
+	}
+	
+	//Select part of the uids according to the sampling rate
+	public HashSet<Integer> samplingUid(float rate)
+	{
+		HashSet<Integer> uidSet = this.loadUids();
+		HashSet<Integer> subUids = new HashSet<Integer>();
+		Iterator<Integer> iter = uidSet.iterator();
+		float indicator = 0.0F;
+		while(iter.hasNext())
+		{
+			indicator = (float) Math.random();
+			if(indicator < rate)
+			{
+				subUids.add(iter.next());
+			}
+			else
+			{
+				iter.next();
+			}
+		}
+		return subUids;		
+	}
+	
+	
+	/*
+	 * Randomly select part of the original data as new set and save it to file(sub_dataset.txt).
+	 * Only sampling the users and the movie count will not be affected.
+	 * */
+	public void sample()
+	{
+		final float SELECTINGRATE = 0.1F;
+//		final float QAULIFYINGRATE = 0.1F;
+//		final int USERIDMODE =  (int) (1 / SELECTINGRATE);
+		
+		String dir = "D:\\dataset\\nf_prize_dataset\\download\\training_set\\training_set";
+		File directory, subFile;
+		HashSet<Integer> subUids = this.samplingUid(SELECTINGRATE);
+		
+		try {
+			directory = new File(dir);
+//			tFile = new File("D:\\dataset\\nf_prize_dataset\\sub4\\training_subset4.txt");
+//			qFile = new File("D:\\dataset\\nf_prize_dataset\\sub4\\qualifying_subset4.txt");
+			subFile = new File("D:\\dataset\\nf_prize_dataset\\sub\\sub_dataset.txt");
+//			BufferedWriter tBw = new BufferedWriter(new FileWriter(tFile));
+//			BufferedWriter qBw = new BufferedWriter(new FileWriter(qFile));
+			BufferedWriter subBw = new BufferedWriter(new FileWriter(subFile));
+			
+			int ratingCount = 0;
+			int movieCount = 0;
+			String[] strs = null;
+			HashMap<Pair, Integer> ratingMap = new HashMap<Pair, Integer>();
+			
+			File[] files = directory.listFiles();
+			for(int i = 0; i < files.length; i++)
+			{
+				BufferedReader br = new BufferedReader(new FileReader(files[i]));
+				System.out.println(files[i].getName());
+				String strLine, strHeader;
+				float indicator = 0F;
+				boolean tHeader = false, qHeader = false, subHeader = false;
+				
+//				indicator = (float) Math.random();
+//				if(indicator >= SELECTINGRATE) //sampling the movie
+//				{
+//					continue;
+//				}
+				
+				strHeader = br.readLine();
+
+				while((strLine = br.readLine()) != null)
+				{
+					if(!subUids.contains(Integer.parseInt(strLine.split(",")[0]))) //sampling the user
+					{
+//						System.out.println("error! uid:" + Integer.parseInt(strLine.split(",")[0]));
+						continue;
+					}					
+					
+					//write to sub_dataset.txt
+					if(!subHeader)//movie id
+					{
+						subBw.write(strHeader + "\n");
+						subHeader = true;
+						movieCount++;
+					}
+					ratingCount++;
+					subBw.write(strLine + "\n");
+					strs = strLine.split(",");
+					ratingMap.put(new Pair(
+							Integer.parseInt(strs[0]), Integer.parseInt(strHeader.substring(0, strHeader.length() - 1))), 
+							Integer.parseInt(strs[1]));
+					
+					indicator = (float) Math.random();
+					
+//					//split into training set and qualifying set
+//					if(indicator < QAULIFYINGRATE)
+//					{
+//						if(!qHeader)
+//						{
+//							qBw.write(strHeader + "\n");
+//							qHeader = true;
+//						}
+//						qBw.write(strLine + "\n");
+//					}
+//					else
+//					{
+//						if(!tHeader)
+//						{
+//							tBw.write(strHeader + "\n");
+//							tHeader = true;
+//						}
+//						tBw.write(strLine + "\n");
+//					}
+				
+				}
+				br.close();				
+			}
+			System.out.println("Trainging Rating Count:" + ratingCount);
+			System.out.println("Trainging RatingMap Count:" + ratingMap.size());
+			System.out.println("Training User Count:" + subUids.size());
+			System.out.println("Training Movie Count:" + movieCount);			
+//			tBw.flush();
+//			qBw.flush();
+			subBw.flush();
+//			tBw.close();
+//			qBw.close();
+			subBw.close();
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void split()
+	{
+		final float QAULIFYINGRATE = 0.1F;
+		
+		File tFile, qFile, subFile;
+		String strLine;
+		String[] strs;
+		int mid = 0, uid, rating;
+		int num1 = 0;
+		int qFileCounter = 0,
+			tFileCounter = 0;
+		boolean tHeader = false, qHeader = false;
+		try {
+			tFile = new File("D:\\dataset\\nf_prize_dataset\\sub\\training_subset.txt");
+			qFile = new File("D:\\dataset\\nf_prize_dataset\\sub\\qualifying_subset.txt");
+			subFile = new File("D:\\dataset\\nf_prize_dataset\\sub\\sub_dataset.txt");
+			BufferedWriter tBw = new BufferedWriter(new FileWriter(tFile));
+			BufferedWriter qBw = new BufferedWriter(new FileWriter(qFile));
+			Data data = loadSubData();
+			BufferedReader br = new BufferedReader(new FileReader(subFile));
+			//initial data			
+			HashMap<Pair, Integer> ratingMap = data.ratingMap;
+			HashMap<Integer, Integer> uRc = new HashMap<Integer, Integer>();
+			HashMap<Integer, Integer> mRc = new HashMap<Integer, Integer>();
+			Iterator<Entry<Pair, Integer>> iter = ratingMap.entrySet().iterator();
+			Entry<Pair, Integer> entry;
+			Pair pair = null;
+			Integer count = 0;
+			double indicator = 0.0;
+			//calc rating count for each user and movie
+			while(iter.hasNext())
+			{
+				entry = iter.next();
+				pair = entry.getKey();
+				if((count = uRc.get(pair.uid)) == null)
+				{
+					uRc.put(pair.uid, 1);
+				}
+				else
+				{
+					uRc.put(pair.uid, count + 1);
+				}
+				if((count = mRc.get(pair.mid)) == null)
+				{
+					mRc.put(pair.mid, 1);					
+				}
+				else
+				{
+					mRc.put(pair.mid, count + 1);
+				}
+			}
+			System.out.println("Splitting...");
+			//splitting
+			while((strLine = br.readLine()) != null)
+			{
+				if(strLine.charAt(strLine.length() - 1) == ':') //movie id
+				{
+					mid = Integer.parseInt(strLine.substring(0, strLine.length() - 1));
+					tHeader = false;
+					qHeader = false;
+					continue;
+				}
+				strs = strLine.split(",");
+				uid = Integer.parseInt(strs[0]);
+				rating = Integer.parseInt(strs[1]);
+				indicator = Math.random();
+				num1 = uRc.get(uid);
+				if(indicator < QAULIFYINGRATE && num1 > 1) // write to qfile
+				{
+					if(!qHeader)
+					{
+						qBw.write(mid + ":\n");
+						qHeader = true;
+					}
+					qBw.write(uid + "," + rating + "\n");
+					uRc.put(uid, num1 - 1);
+					qFileCounter++;
+				}
+				else //write to tfile
+				{
+					if(!tHeader)
+					{
+						tBw.write(mid + ":\n");
+						tHeader = true;
+					}
+					tBw.write(uid + "," + rating + "\n");
+					tFileCounter++;
+				}
+			}
+			qBw.flush();
+			tBw.flush();
+			qBw.close();
+			tBw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Training Set count:" + tFileCounter);
+		System.out.println("Qualifying Set count:" + qFileCounter);
+	}
+	
+	public Data loadSubData()
+	{
+		String path = "D:\\dataset\\nf_prize_dataset\\sub\\sub_dataset.txt";
+		BufferedReader br = null;
+		String strLine = null, strLastLine = null;
+		ArrayList<Integer> uidArr = null;
+		ArrayList<Integer> midArr = null;
+		HashMap<Integer, Integer> uidMap = null;
+		HashMap<Integer, Integer> midMap = null;
+		HashMap<Pair, Integer> ratingMap = null;		
+		int uid = 0, mid = 0, rating = 0;
+		String[] strSeg = null;
+				
+//		int confictingCount = 0;
+//		int totalLineCount = 0;
+//		int movieLineCount = 0;
+//		int ratingLineCount = 0;
+		
+		try {
+			br = new BufferedReader(new FileReader(new File(path)));
+			uidArr = new ArrayList<Integer>(500000);
+			midArr = new ArrayList<Integer>(2000);
+			uidMap = new HashMap<Integer, Integer>(700000);
+			midMap = new HashMap<Integer, Integer>(2500);
+			ratingMap = new HashMap<Pair, Integer>(15000000);
+			while((strLine = br.readLine()) != null)
+			{
+//				totalLineCount++;
+				if(strLine.length() <= 6) //movie id
+				{
+//					movieLineCount++;
+					mid = Integer.parseInt(strLine.substring(0, strLine.length() - 1));
+					if(midMap.size() >= midArr.size())
+					{
+						midArr.add(mid);
+					}
+					else
+					{
+						midArr.set(midMap.size(), mid);
+					}
+					midMap.put(mid, midMap.size());
+					if(strLastLine != null && strLastLine.length() <= 6)
+					{
+						System.out.println("empty movie:" + (mid - 1));
+					}
+					strLastLine = strLine;
+					continue;
+				}
+//				ratingLineCount++;
+				strSeg = strLine.split(",");
+				uid = Integer.parseInt(strSeg[0]);
+				if(!uidMap.containsKey(uid))
+				{
+					if(uidMap.size() >= uidArr.size())
+					{
+						uidArr.add(uid);
+					}
+					else
+					{
+						uidArr.set(uidMap.size(), uid);	
+					}					
+					uidMap.put(uid, uidMap.size());
+				}
+				rating = Integer.parseInt(strSeg[1]);
+				
+//				//record some users rating the same movie more than one time
+//				if(ratingMap.containsKey(new Pair(uid, mid))) 
+//				{
+//					confictingCount++;
+//				}
+				ratingMap.put(new Pair(uid, mid), rating);
+				strLastLine = strLine;
+			}
+			System.out.println("rating count" + ratingMap.size());
+			System.out.println("uidArr count" + uidArr.size());
+			System.out.println("uidMap count" + uidMap.size());
+			System.out.println("midArr count" + midArr.size());
+			System.out.println("midMap count" + midMap.size());
+//			System.out.println("conficting count" + confictingCount);
+//			System.out.println("totalLine count" + totalLineCount);
+//			System.out.println("movieLine count" + movieLineCount);
+//			System.out.println("ratingLine count" + ratingLineCount);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally{
+			try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+		int[] uids = new int[uidArr.size()];
+		int[] mids = new int[midArr.size()];
+		for(int i = 0; i < uids.length; i++)
+		{
+			uids[i] = uidArr.get(i);
+		}
+		for(int i = 0; i < mids.length; i++)
+		{
+			mids[i] = midArr.get(i);
+		}
+
+		return new Data(uids, mids, uidMap, midMap, ratingMap);
+	}
+	
+	public static void main(String args[])
+	{
+		Spliter spliter = new Spliter();
+		spliter.split();
+		//spliter.extratUserIds();
+	}
+}

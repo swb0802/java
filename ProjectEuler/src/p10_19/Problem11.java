@@ -87,6 +87,6 @@ public class Problem11 {
 		}
 		System.out.println(maxProduct);
 		System.out.println(arr[6][8] * arr[7][9] * arr[8][10] * arr[9][11]);
+		sc.close();
 	}
-	
 }

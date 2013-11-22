@@ -144,6 +144,7 @@ public class Problem13 {
 		{
 			System.out.print(sta.pop());
 		}
+		sc.close();
 	}
 	
 }

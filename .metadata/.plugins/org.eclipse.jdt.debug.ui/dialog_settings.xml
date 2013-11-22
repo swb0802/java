@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
+	<item value="83" key="org.eclipse.jdt.debug.ui.jre_preference_page_context.columnWidth0"/>
+	<item value="167" key="org.eclipse.jdt.debug.ui.jre_preference_page_context.columnWidth1"/>
+	<item value="1" key="org.eclipse.jdt.debug.ui.jre_preference_page_context.sortColumn"/>
+	<item value="91" key="org.eclipse.jdt.debug.ui.jre_preference_page_context.columnWidth2"/>
 	<section name="org.eclipse.jdt.debug.ui.MAIN_METHOD_SELECTION_DIALOG">
 		<item value="true" key="ShowStatusLine"/>
 		<item value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x0D;&#x0A;&lt;History&gt;&#x0D;&#x0A;&lt;historyRootNode&gt;&#x0D;&#x0A;&lt;infoNode&gt;=hc-v4/lib\/log4j-1.2.16.jar&amp;lt;org.apache.log4j.chainsaw(Main.class[Main&lt;/infoNode&gt;&#x0D;&#x0A;&lt;/historyRootNode&gt;&#x0D;&#x0A;&lt;/History&gt;" key="History"/>
@@ -12,9 +16,11 @@
 		</section>
 	</section>
 	<section name="org.eclipse.jdt.internal.debug.ui.ExpressionInformationControlCreator$ExpressionInformationControl">
-		<item value="135" key="SashWeightDetails"/>
-		<item value="864" key="SashWeightTree"/>
+		<item value="188" key="SashWeightDetails"/>
+		<item value="811" key="SashWeightTree"/>
 		<item value="218" key="HEIGHT"/>
 		<item value="614" key="WIDTH"/>
+	</section>
+	<section name="conditionHistory">
 	</section>
 </section>

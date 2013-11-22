@@ -1,0 +1,57 @@
+import java.util.HashMap;
+
+
+public class Test {
+
+	
+	
+	public static void main(String args[])
+	{
+		HashMap<Pair, Integer> map = new HashMap<Pair, Integer>();
+		map.put(new Pair(1,2), 3);
+		System.out.println(map.containsKey(new Pair(1,2)));
+		Pair p1 = new Pair(1,2), p2 = new Pair(1,2);
+		System.out.println(p1.equals(p2));
+		System.out.println(p1.hashCode());
+		System.out.println(p2.hashCode());
+		System.out.println(p1.toString());
+		System.out.println(p2.toString());
+	}
+}
+
+class Pair
+{
+	public int i;
+	public int j;
+	public Pair(int i, int j)
+	{
+		this.i = i;
+		this.j = j;
+	}
+	
+	@Override
+	public boolean equals(Object p)
+	{
+		if(p == null)
+		{
+			return false;
+		}
+		if((i == ((Pair)p).i) && (j == ((Pair)p).j))
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return (int) (i * Math.pow(10, 5) + j);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "" + Math.random();
+	}
+}

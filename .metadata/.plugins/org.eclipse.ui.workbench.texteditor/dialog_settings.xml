@@ -13,14 +13,20 @@
 		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="26" key="selection"/>
+		<item value=".write" key="selection"/>
 		<list key="findhistory">
+			<item value=".write"/>
+			<item value="\n"/>
+			<item value=": "/>
+			<item value="COLIN"/>
+			<item value="COLON"/>
 			<item value="26"/>
 			<item value="br"/>
 			<item value="SinaSSOEncoder"/>
-			<item value="code"/>
 		</list>
 		<list key="replacehistory">
+			<item value=".append"/>
+			<item value="\t"/>
 		</list>
 	</section>
 </section>
